@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductList from "./components/ProductList";
@@ -20,6 +18,7 @@ const App = () => {
           limit: 10,
           search: filters.search || "",
           category: filters.category || "",
+          brand: filters.brand || "",
           minPrice: filters.minPrice || "",
           maxPrice: filters.maxPrice || "",
           sort: sort || "",
@@ -27,31 +26,32 @@ const App = () => {
       });
       setProducts(data.products);
       setTotalPages(data.totalPages);
-      setCurrentPage(data.currentPage);
+      setCurrentPage(data.currentPage); // Set currentPage to match the fetched data
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(); // Fetch products on initial render and sort changes
+  }, [currentSort]);
 
   const handlePageChange = (page) => {
-    fetchProducts(page, {}, currentSort); // Use the current sort option when changing the page
+    setCurrentPage(page); // Update currentPage state
+    fetchProducts(page, {}, currentSort); // Fetch products for the selected page
   };
 
   const handleSearch = (searchTerm) => {
-    fetchProducts(1, { search: searchTerm }, currentSort);
+    fetchProducts(1, { search: searchTerm }, currentSort); // Reset to page 1 on search
   };
 
   const handleFilter = (filters) => {
-    fetchProducts(1, filters, currentSort);
+    fetchProducts(1, filters, currentSort); // Reset to page 1 on filter change
   };
 
   const handleSort = (sortOption) => {
     setCurrentSort(sortOption);
-    fetchProducts(1, {}, sortOption);
+    fetchProducts(1, {}, sortOption); // Reset to page 1 on sort change
   };
 
   return (
