@@ -1,17 +1,18 @@
-// src/pages/HomePage.js
+
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductList from "./components/ProductList";
 import Pagination from "./components/Pagination";
-import SearchFilterSort from "./Components/SearchFilterSort";
+import SearchFilterSort from "./components/SearchFilterSort";
 
 const App = () => {
   const [products, setProducts] = useState([]);
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentSort, setCurrentSort] = useState(""); // Track the current sort option
 
-  const fetchProducts = async (page = 1, filters = {}, sort = "") => {
+  const fetchProducts = async (page = 1, filters = {}, sort = currentSort) => {
     try {
       const { data } = await axios.get("http://localhost:5000/api/products", {
         params: {
@@ -27,7 +28,6 @@ const App = () => {
       setProducts(data.products);
       setTotalPages(data.totalPages);
       setCurrentPage(data.currentPage);
-      console.log(data);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
@@ -38,18 +38,19 @@ const App = () => {
   }, []);
 
   const handlePageChange = (page) => {
-    fetchProducts(page);
+    fetchProducts(page, {}, currentSort); // Use the current sort option when changing the page
   };
 
   const handleSearch = (searchTerm) => {
-    fetchProducts(1, { search: searchTerm });
+    fetchProducts(1, { search: searchTerm }, currentSort);
   };
 
   const handleFilter = (filters) => {
-    fetchProducts(1, filters);
+    fetchProducts(1, filters, currentSort);
   };
 
   const handleSort = (sortOption) => {
+    setCurrentSort(sortOption);
     fetchProducts(1, {}, sortOption);
   };
 
