@@ -33,4 +33,4 @@ This is the frontend repository for the Mega Mart e-commerce application. The fr
    git clone https://github.com/yourusername/mega-mart-frontend.git
    cd mega-mart-frontend
     npm install
-    npm start
+    npm run dev
